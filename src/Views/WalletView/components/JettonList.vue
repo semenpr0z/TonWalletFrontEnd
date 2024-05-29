@@ -26,23 +26,6 @@ export default {
 
 <template>
   <ol class="list-group mt-5 w-100">
-    <!-- <li class="list-group-item jetton" v-if="jettonStore.jettons.length > 0">
-      <div class="left-wrapper">
-        <img src="/svg/ton-logo.svg" alt="" class="img" />
-        <div class="name-price data">
-          <span class="fw-bold name">TON</span>
-          <span class="jetton-usd">{{ jettonStore.tonPrice }}$</span>
-        </div>
-      </div>
-      <div class="value-price data">
-        <span class="jetton-balance">{{
-          jettonStore.formatBalance(jettonStore.balance)
-        }}</span>
-        <span class="jetton-usd"
-          >{{ jettonStore.formatBalance(balance * tonPrice) }}$
-        </span>
-      </div>
-    </li> -->
     <JettonItem
       :key="0"
       :jetton="{
@@ -53,7 +36,7 @@ export default {
         },
         price: {
           prices: {
-            USD: jettonStore.parseNumber(jettonStore.formatBalance(jettonStore.balance * jettonStore.tonPrice)) ,
+            USD: jettonStore.tonPrice,
           },
         },
         balance: jettonStore.balance,
