@@ -1,5 +1,4 @@
 <script>
-import AccountInput from "./components/AccountInput.vue";
 import TotalAmount from "./components/TotalAmount.vue";
 import JettonList from "./components/JettonList.vue";
 import { useJettonStore } from "@/stores/jettonStore.js";
@@ -11,7 +10,6 @@ export default {
     };
   },
   components: {
-    AccountInput,
     JettonList,
     TotalAmount,
   },
@@ -38,7 +36,6 @@ export default {
 <template>
   <div class="wallet-page">
     <h1>Wallets</h1>
-    <AccountInput />
     <div class="spinner-border" role="status" v-if="jettonStore.loading">
       <span class="visually-hidden">Loading...</span>
     </div>

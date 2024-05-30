@@ -1,20 +1,23 @@
 <script>
-export default {};
+import AccountInput from "@/components/AccountInput.vue";
+
+export default {
+  components: {
+    AccountInput,
+  },
+};
 </script>
 
 <template>
-  <header class="p-3 bg-dark text-white">
-    <div class="container">
+  <header class="p-3 bg-dark text-white ">
+    <div class="container d-flex justify-content-between ">
       <div
-        class="d-flex flex-wrap align-items-center justify-content-center "
+        class="d-flex  align-items-center justify-content-start gap-3"
       >
-        <a
-          href="/"
-          class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none"
-        >
-          <img class="ton-logo" src="/svg/ton-logo.svg" alt="" />
-        </a>
+        <img class="ton-logo" src="/svg/ton-logo.svg" alt="" />
+        <span class="name">Tonviewer 2.0</span>
       </div>
+      <AccountInput />
     </div>
   </header>
 </template>
@@ -24,5 +27,10 @@ export default {};
   width: 50px;
   height: 50px;
   border-radius: 50%;
+}
+
+.name {
+  font-size: 24px;
+  font-weight: 600;
 }
 </style>
