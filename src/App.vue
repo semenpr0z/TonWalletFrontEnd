@@ -1,15 +1,20 @@
 <script>
+import Header from "@/Layout/Header/Header.vue";
+
 export default {
   name: "App",
   data() {
     return {};
   },
+  components: {
+    Header,
+  },
 };
 </script>
 
 <template>
-  <header></header>
-  <main>
+  <Header></Header>
+  <main class="container">
     <router-view></router-view>
   </main>
   <footer></footer>

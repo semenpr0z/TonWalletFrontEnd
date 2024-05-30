@@ -25,7 +25,7 @@ export default {
 </script>
 
 <template>
-  <ol class="list-group mt-5 w-100">
+  <ol class="list-group w-100 mt-3">
     <JettonItem
       :key="0"
       :jetton="{

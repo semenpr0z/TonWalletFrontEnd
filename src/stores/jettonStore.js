@@ -59,5 +59,22 @@ export const useJettonStore = defineStore("jetton", {
       const normalizedString = cleanedString.replace(",", ".");
       return parseFloat(normalizedString);
     },
+    showTotalTonAmount() {
+      const tonBalanceInTon = parseFloat(this.formatBalance(this.balance)); // Преобразование из nanos в TON и парсинг в число
+      const totalJettonsInTon = this.jettons.reduce((total, jetton) => {
+        const jettonBalanceInTon =
+          (jetton.balance * jetton.price.prices.TON) / 10 ** 9;
+        return total + jettonBalanceInTon;
+      }, 0);
+      return (tonBalanceInTon + totalJettonsInTon).toFixed(2);
+    },
+    showTotalUsdAmount() {
+      const tonBalanceInUsd = (this.balance / 10 ** 9) * this.tonPrice; // Преобразование из nanos в TON и затем в USD
+      const totalJettonsInUsd = this.jettons.reduce((total, jetton) => {
+        const jettonBalanceInUsd = jetton.balance * jetton.price.prices.USD / 10 ** 9;
+        return total + jettonBalanceInUsd;
+      }, 0);
+      return (tonBalanceInUsd + totalJettonsInUsd).toFixed(2);
+    }
   },
 });

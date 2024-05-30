@@ -1,5 +1,6 @@
 <script>
 import AccountInput from "./components/AccountInput.vue";
+import TotalAmount from "./components/TotalAmount.vue";
 import JettonList from "./components/JettonList.vue";
 import { useJettonStore } from "@/stores/jettonStore.js";
 
@@ -12,6 +13,7 @@ export default {
   components: {
     AccountInput,
     JettonList,
+    TotalAmount,
   },
   setup() {
     const jettonStore = useJettonStore();
@@ -35,11 +37,16 @@ export default {
 
 <template>
   <div class="wallet-page">
-    <h1>Jettons for Account</h1>
+    <h1>Wallets</h1>
     <AccountInput />
-    <div v-if="jettonStore.loading">Loading...</div>
+    <div class="spinner-border" role="status" v-if="jettonStore.loading">
+      <span class="visually-hidden">Loading...</span>
+    </div>
     <div v-if="jettonStore.error">{{ jettonStore.error }}</div>
-    <JettonList v-if="jettonStore.jettons.length > 0" />
+    <div v-if="jettonStore.jettons.length > 0" class="w-100">
+      <TotalAmount />
+      <JettonList />
+    </div>
   </div>
 </template>
 
@@ -49,6 +56,7 @@ export default {
   flex-direction: column;
   align-items: center;
   gap: 10px;
+  margin: 50px 0;
 }
 
 .list-group {
