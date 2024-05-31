@@ -2,6 +2,7 @@
 import TotalAmount from "./components/TotalAmount.vue";
 import JettonList from "./components/JettonList.vue";
 import { useJettonStore } from "@/stores/jettonStore.js";
+import EventsList from "./components/EventsList.vue";
 
 export default {
   data() {
@@ -12,6 +13,7 @@ export default {
   components: {
     JettonList,
     TotalAmount,
+    EventsList,
   },
   setup() {
     const jettonStore = useJettonStore();
@@ -44,6 +46,7 @@ export default {
       <TotalAmount />
       <JettonList />
     </div>
+    <EventsList />
   </div>
 </template>
 

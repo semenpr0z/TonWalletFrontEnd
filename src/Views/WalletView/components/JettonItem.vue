@@ -11,6 +11,17 @@ export default {
       jettonStore,
     };
   },
+  methods: {
+    getDiffClass(diff) {
+      if (diff.startsWith("−")) {
+        return "text-danger";
+      } else if (diff.startsWith("+")) {
+        return "text-success";
+      } else {
+        return ""; // на случай, если строка не содержит ни "+" ни "-"
+      }
+    },
+  },
 };
 </script>
 
@@ -45,7 +56,10 @@ export default {
         </span>
 
         <span class="jetton-usd"
-          >{{ jetton.price.prices.USD.toFixed(4) }}$</span
+          >{{ jetton.price.prices.USD.toFixed(4) }}$
+          <span :class="getDiffClass(jetton.price.diff_24h.USD)">{{
+            jetton.price.diff_24h.USD
+          }}</span></span
         >
       </div>
     </div>
@@ -104,6 +118,10 @@ export default {
   .jetton-usd {
     font-size: 14px;
     line-height: 14px;
+
+    span {
+      font-size: 12px;
+    }
   }
 
   .jetton-ton {

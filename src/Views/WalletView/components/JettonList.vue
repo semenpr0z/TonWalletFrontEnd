@@ -38,6 +38,9 @@ export default {
           prices: {
             USD: jettonStore.tonPrice,
           },
+          diff_24h: {
+            USD: jettonStore.tonPriceDifference,
+          },
         },
         balance: jettonStore.balance,
       }"

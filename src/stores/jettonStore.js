@@ -10,6 +10,9 @@ export const useJettonStore = defineStore("jetton", {
     loading: false,
     error: null,
     tonPrice: null,
+    tonPriceDifference: null,
+    walletEvents: [],
+    address: null,
   }),
   actions: {
     async fetchData() {
@@ -23,11 +26,31 @@ export const useJettonStore = defineStore("jetton", {
           `https://tonapi.io/v2/accounts/${this.accountId}`
         );
         const responseTonPrice = await axios.get(
-          `https://tonapi.io/v2/rates/markets`
+          `https://tonapi.io/v2/rates?tokens=ton&currencies=usd`
         );
         this.jettons = responseJettons.data.balances;
+        console.log(this.jettons);
         this.balance = responseBalance.data.balance;
-        this.tonPrice = responseTonPrice.data.markets[0].usd_price;
+        console.log(responseBalance.data);
+        this.tonPrice = responseTonPrice.data.rates.TON.prices.USD;
+        this.tonPriceDifference = responseTonPrice.data.rates.TON.diff_24h.USD;
+
+        console.log(responseTonPrice);
+
+        this.address = responseBalance.data.address;
+        setTimeout(async () => {
+          try {
+            const anotherResponse = await axios.get(
+              `https://tonapi.io/v2/accounts/${this.address}/events?initiator=false&subject_only=false&limit=20`
+            );
+            this.walletEvents = anotherResponse.data.events;
+            console.log(anotherResponse.data.events);
+            // Далее обрабатывайте ответ от другого запроса
+          } catch (err) {
+            console.error("Failed to fetch data from another API.");
+            // Обработка ошибки
+          }
+        }, 4000);
       } catch (err) {
         this.error =
           "Failed to fetch jettons. Please check the account ID and try again.";
@@ -71,10 +94,11 @@ export const useJettonStore = defineStore("jetton", {
     showTotalUsdAmount() {
       const tonBalanceInUsd = (this.balance / 10 ** 9) * this.tonPrice; // Преобразование из nanos в TON и затем в USD
       const totalJettonsInUsd = this.jettons.reduce((total, jetton) => {
-        const jettonBalanceInUsd = jetton.balance * jetton.price.prices.USD / 10 ** 9;
+        const jettonBalanceInUsd =
+          (jetton.balance * jetton.price.prices.USD) / 10 ** 9;
         return total + jettonBalanceInUsd;
       }, 0);
       return (tonBalanceInUsd + totalJettonsInUsd).toFixed(2);
-    }
+    },
   },
 });
