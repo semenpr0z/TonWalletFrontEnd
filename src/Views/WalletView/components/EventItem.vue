@@ -14,26 +14,37 @@ export default {
       type: Object,
     },
   },
+  methods: {
+    isTonRelated(action) {
+      return action.SmartContractExec?.ton_attached || action.TonTransfer;
+    },
+    getTransferSign(address) {
+      return address === this.jettonStore.address ? "-" : "+";
+    },
+    isSwapTokens(action) {
+      return action.simple_preview.name === "Swap Tokens";
+    },
+    formatSwapAmount(swap, inKey, outKey) {
+      return swap[inKey]
+        ? `-${this.jettonStore.formatBalance(swap[inKey])}`
+        : `+${this.jettonStore.formatBalance(swap[outKey])}`;
+    },
+    getJettonSymbol(swap) {
+      return swap.jetton_master_in?.symbol || swap.jetton_master_out?.symbol;
+    },
+  },
 };
 </script>
 
 <template>
   <li class="p-3 border rounded">
-    <!-- <div class="ms-2 me-auto event" v-for="action in event.actions">
-      <div class="fw-bold">{{ action.simple_preview.name }}</div>
-      <div class="description">
-        <span>
-          {{ action.simple_preview.description }}
-        </span>
-      </div>
-    </div> -->
-
     <ul class="list-group list-group-flush">
       <li
         class="list-group-item d-flex justify-content-between align-items-center"
         v-for="action in event.actions"
+        :key="action.id"
       >
-        <div class="d-flex gap-2">
+        <div class="d-flex gap-2 align-items-center">
           <img
             v-if="action.simple_preview.value_image"
             class="jetton-logo"
@@ -41,9 +52,7 @@ export default {
             alt=""
           />
           <img
-            v-else-if="
-              action.SmartContractExec?.ton_attached || action.TonTransfer
-            "
+            v-else-if="isTonRelated(action)"
             src="/svg/ton-logo.svg"
             class="jetton-logo"
             alt=""
@@ -51,50 +60,36 @@ export default {
           <div>
             <div class="fw-bold">{{ action.simple_preview.name }}</div>
             <div class="description">
-              <span>
-                {{ action.simple_preview.description }}
-              </span>
+              <span>{{ action.simple_preview.description }}</span>
             </div>
           </div>
         </div>
-        <div>
-          <span v-if="action.SmartContractExec">-{{
-            jettonStore.formatBalance(action.SmartContractExec.ton_attached)
-          }} TON</span>
-          <span v-if="action.JettonTransfer">{{ action.JettonTransfer.sender.address == jettonStore.address ? '+' : '-' }}{{
-            jettonStore.formatBalance(action.JettonTransfer.amount)
-          }} {{ action.JettonTransfer.jetton.symbol }}</span>
-          <span v-if="action.TonTransfer"
-            >{{ action.TonTransfer.sender.address == jettonStore.address ? '+' : '-' }}{{
-              jettonStore.formatBalance(action.TonTransfer.amount)
+        <div class="text-end">
+          <span v-if="action.SmartContractExec">
+            -{{
+              jettonStore.formatBalance(action.SmartContractExec.ton_attached)
             }}
-            TON</span
-          >
-          <div
-            v-if="action.simple_preview.name == 'Swap Tokens'"
-            class="amounts"
-          >
-            <span class="text-end"
-              >{{
-                action.JettonSwap?.amount_in
-                  ? `-${jettonStore.formatBalance(action.JettonSwap.amount_in)}`
-                  : `+${jettonStore.formatBalance(
-                      action.JettonSwap.amount_out
-                    )}`
-              }}
+            TON
+          </span>
+          <span v-if="action.JettonTransfer">
+            {{ getTransferSign(action.JettonTransfer.sender.address)
+            }}{{ jettonStore.formatBalance(action.JettonTransfer.amount) }}
+            {{ action.JettonTransfer.jetton.symbol }}
+          </span>
+          <span v-if="action.TonTransfer">
+            {{ getTransferSign(action.TonTransfer.sender.address)
+            }}{{ jettonStore.formatBalance(action.TonTransfer.amount) }} TON
+          </span>
+          <div v-if="isSwapTokens(action)" class="amounts">
+            <span class="text-end">
               {{
-                action.JettonSwap.jetton_master_in?.symbol ||
-                action.JettonSwap.jetton_master_out?.symbol
-              }}</span
-            >
-            <span class="text-end"
-              >{{
-                action.JettonSwap?.ton_out
-                  ? `+${jettonStore.formatBalance(action.JettonSwap.ton_out)}`
-                  : `-${jettonStore.formatBalance(action.JettonSwap.ton_in)}`
+                formatSwapAmount(action.JettonSwap, "amount_in", "amount_out")
               }}
-              TON</span
-            >
+              {{ getJettonSymbol(action.JettonSwap) }}
+            </span>
+            <span class="text-end">
+              {{ formatSwapAmount(action.JettonSwap, "ton_in", "ton_out") }} TON
+            </span>
           </div>
         </div>
       </li>
