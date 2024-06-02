@@ -32,6 +32,15 @@ export default {
     getJettonSymbol(swap) {
       return swap.jetton_master_in?.symbol || swap.jetton_master_out?.symbol;
     },
+    getAmountClass(amount) {
+      const amountString = amount.toString();
+      console.log(amountString);
+      if (amountString.startsWith("-")) {
+        return "text-danger";
+      } else {
+        return "text-success";
+      }
+    },
   },
 };
 </script>
@@ -65,29 +74,68 @@ export default {
           </div>
         </div>
         <div class="text-end">
-          <span v-if="action.SmartContractExec">
+          <span
+            v-if="action.SmartContractExec"
+            :class="getAmountClass(-action.SmartContractExec.ton_attached)"
+            class="fw-bold"
+          >
             -{{
               jettonStore.formatBalance(action.SmartContractExec.ton_attached)
             }}
             TON
           </span>
-          <span v-if="action.JettonTransfer">
+          <span
+            v-if="action.JettonTransfer"
+            :class="
+              getAmountClass(
+                getTransferSign(action.JettonTransfer.sender.address) === '-'
+                  ? -action.JettonTransfer.amount
+                  : action.JettonTransfer.amount
+              )
+            "
+            class="fw-bold"
+          >
             {{ getTransferSign(action.JettonTransfer.sender.address)
             }}{{ jettonStore.formatBalance(action.JettonTransfer.amount) }}
             {{ action.JettonTransfer.jetton.symbol }}
           </span>
-          <span v-if="action.TonTransfer">
+          <span
+            v-if="action.TonTransfer"
+            :class="
+              getAmountClass(
+                getTransferSign(action.TonTransfer.sender.address) === '-'
+                  ? -action.TonTransfer.amount
+                  : action.TonTransfer.amount
+              )
+            "
+            class="fw-bold"
+          >
             {{ getTransferSign(action.TonTransfer.sender.address)
-            }}{{ jettonStore.formatBalance(action.TonTransfer.amount) }} TON
+            }}{{ jettonStore.formatBalance(action.TonTransfer.amount) }}
+            TON
           </span>
           <div v-if="isSwapTokens(action)" class="amounts">
-            <span class="text-end">
+            <span
+              class="fw-bold text-end"
+              :class="
+                getAmountClass(
+                  formatSwapAmount(action.JettonSwap, 'amount_in', 'amount_out')
+                )
+              "
+            >
               {{
                 formatSwapAmount(action.JettonSwap, "amount_in", "amount_out")
               }}
               {{ getJettonSymbol(action.JettonSwap) }}
             </span>
-            <span class="text-end">
+            <span
+              class="fw-bold text-end"
+              :class="
+                getAmountClass(
+                  formatSwapAmount(action.JettonSwap, 'ton_in', 'ton_out')
+                )
+              "
+            >
               {{ formatSwapAmount(action.JettonSwap, "ton_in", "ton_out") }} TON
             </span>
           </div>
