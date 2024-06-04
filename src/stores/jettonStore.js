@@ -41,7 +41,7 @@ export const useJettonStore = defineStore("jetton", {
         setTimeout(async () => {
           try {
             const anotherResponse = await axios.get(
-              `https://tonapi.io/v2/accounts/${this.address}/events?initiator=false&subject_only=false&limit=20`
+              `https://tonapi.io/v2/accounts/${this.address}/events?initiator=false&subject_only=false&limit=100`
             );
             this.walletEvents = anotherResponse.data.events;
             console.log(anotherResponse.data.events);
@@ -83,7 +83,8 @@ export const useJettonStore = defineStore("jetton", {
       return parseFloat(normalizedString);
     },
     showTotalTonAmount() {
-      const tonBalanceInTon = parseFloat(this.formatBalance(this.balance)); // Преобразование из nanos в TON и парсинг в число
+      const tonBalanceInTon = parseFloat(this.balance / 10 ** 9); // Преобразование из nanos в TON и парсинг в число
+      console.log(tonBalanceInTon);
       const totalJettonsInTon = this.jettons.reduce((total, jetton) => {
         const jettonBalanceInTon =
           (jetton.balance * jetton.price.prices.TON) / 10 ** 9;

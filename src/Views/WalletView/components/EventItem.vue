@@ -33,13 +33,26 @@ export default {
       return swap.jetton_master_in?.symbol || swap.jetton_master_out?.symbol;
     },
     getAmountClass(amount) {
-      const amountString = amount.toString();
-      console.log(amountString);
-      if (amountString.startsWith("-")) {
+      if (amount.toString().startsWith("-")) {
         return "text-danger";
       } else {
         return "text-success";
       }
+    },
+    getTime(timestamp) {
+      const date = new Date(timestamp * 1000);
+      const options = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      };
+      const formattedDate = date.toLocaleString("ru-RU", options);
+
+      return formattedDate.replace(",", "").replace(" ", ", ");
     },
   },
 };
@@ -67,7 +80,12 @@ export default {
             alt=""
           />
           <div>
-            <div class="fw-bold">{{ action.simple_preview.name }}</div>
+            <div class="fw-bold">
+              {{ action.simple_preview.name }} ({{ getTime(event.timestamp) }})
+              <span class="text-danger" v-if="action.status == 'failed'"
+                >(Неуспешная операция)</span
+              >
+            </div>
             <div class="description">
               <span>{{ action.simple_preview.description }}</span>
             </div>
